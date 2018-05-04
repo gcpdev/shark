@@ -1,0 +1,8 @@
+.idea/
+*.iml
+target/
+Schema/
+result/
+.DS_Store
+
+/bin/
