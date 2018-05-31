@@ -4,13 +4,12 @@
 
 let $ = jQuery;
 
-/* TO-DOs
- * handle ontology remote input
- */
 let editor;
 
 let isCustomTest = false;
 let isRemoteOntology = false;
+
+let basePath = 'https://shark-ws.herokuapp.com/'; //or use http://localhost:8081/ for running locally
 
 $(document).ready(function () {
 
@@ -100,7 +99,7 @@ $(document).ready(function () {
     $('form').on('change', ':checkbox', function () {
         console.log('checkbox ' + this.name + ' toggled');
 
-        //checks whether the checkbox was activated or deactivated and 
+        //checks whether the checkbox was activated or deactivated and
         //inserts or removes the test from SHACL_selected
         if (SHACL_selected_class.has(this.name)) {
             SHACL_selected_class.delete(this.name);
@@ -270,7 +269,7 @@ function ($) {
 
         if (isCustomTest) {
             shaclFile = editor.getValue();
-        } 
+        }
         else {
             shaclFile += `
         gdl-shape:
@@ -292,7 +291,7 @@ function ($) {
               sh:prefix "gdl" ;
               sh:namespace "http://dbpedia.org/ontology-guidelines/"^^xsd:anyURI ;
         ] .
-        
+
         `;
 
             //if at least one class test was selected, then insert the class shape prefixes
@@ -334,8 +333,8 @@ function ($) {
         formData.append("shacltest", shacl);
         formData.append("format", "text/turtle");
 
-        if(isRemoteOntology) serviceURL = 'http://localhost:8081/ws/users/ontologyURL';
-        else serviceURL = 'http://localhost:8081/ws/users/ontologyUpload';
+        if(isRemoteOntology) serviceURL = basePath + 'ws/users/ontologyURL';
+        else serviceURL = basePath + 'ws/users/ontologyUpload';
 
         $.ajax({
             data: formData,
@@ -416,7 +415,7 @@ jQuery(function ($) {
             console.log(group);
 
             SHACL_tests_group = `
-            
+
             gdl-shape:${groups[index].shape}
                 a sh:Shape;
                 `;
@@ -432,7 +431,7 @@ jQuery(function ($) {
                 }
             }
 
-            //check whether there is a single or multiple targetSubjectsOf 
+            //check whether there is a single or multiple targetSubjectsOf
             if (typeof groups[index].targetSubjectsOf === 'string') {
                 SHACL_tests_group += `sh:targetSubjectsOf ${groups[index].targetSubjectsOf};
                 `;
@@ -489,14 +488,14 @@ jQuery(function ($) {
             ${questions[i].test.join('\n')}
             """;
       ];
-      
+
       `;
                         break;
                     case "sh:property":
                         let prop = questions[i].test.join('\n');
                         thisSHACL += replaceLast(prop, '.', ';');
                         thisSHACL += ` ];
-                            
+
                             `;
                         break;
                 }
